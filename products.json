@@ -1,0 +1,53 @@
+[
+  {
+    "product_id": 100,
+    "type": "simple",
+    "name": "My product 1",
+    "description": "My product description 1 alt",
+    "regular_price": 300,
+    "manage_stock": 0,
+    "stock": 3,
+    "weight": 0,
+    "has_variations": 0,
+    "pics": ["https://rovision.ro/wp-content/uploads/2021/05/25577_cablu-utp-cat-6-30-cupru-05-mm-rola-305-m-pentru-retelesupraveghereinternet.png", "https://rovision.ro/wp-content/uploads/2021/05/25578_cablu-utp-cat-6-30-cupru-05-mm-rola-305-m-pentru-retelesupraveghereinternet-1.jpg","https://rovision.ro/wp-content/uploads/2021/05/25899_cablu-electric-plat-alb-2x075mm-myyup-100mrola.jpg","https://rovision.ro/wp-content/uploads/2021/05/25900_cablu-retea-gembird-utp-cat-6-cca-rola-100m-gri-175279.jpeg"],
+    "categories": [{"parent": 0, "id": 1, "name": "cabluri"}, {"parent": 1, "id": 2, "name": "UDP"}]
+  },
+  {
+    "product_id": 300,
+    "type": "variable",
+    "name": "My product 3",
+    "description": "My product description 3",
+    "regular_price": 0,
+    "manage_stock": 1,
+    "stock": 11,
+    "weight": 0,
+    "attribute_name": "Heigh",
+    "has_variations": 1,
+    "pics": ["https://rovision.ro/wp-content/uploads/2021/05/25536_cablu-rg59-coaxial-cu-alimentare-2x075-mm-rola-100-m-1.jpg"],
+    "categories": [{"parent": 0, "id": 3, "name": "camere"}]  
+  },
+  {
+    "id": 1,
+    "type": "product_variation",
+    "parent_product_id": 300,
+    "description": "My product variation 1",
+    "regular_price": 5,
+    "manage_stock": 1,
+    "stock": 3,
+    "weight": 0,
+    "attribute_name": "Heigh",
+    "attribute_value": "X"
+  },
+  {
+    "id": 2,
+    "type": "product_variation",
+    "parent_product_id": 300,
+    "description": "My product variation description 2",
+    "regular_price": 15,
+    "manage_stock": 1,
+    "stock": 0,
+    "weight": 0,
+    "attribute_name": "Heigh",
+    "attribute_value": "M"
+  }
+]

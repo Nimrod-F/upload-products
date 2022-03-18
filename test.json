@@ -1,0 +1,13 @@
+[
+  {
+    "product_id": 100,
+    "type": "simple",
+    "name": "My product 1",
+    "description": "My product description 1",
+    "regular_price": 100,
+    "manage_stock": 1,
+    "stock": 3,
+    "weight": 0,
+    "has_variations": 0
+  }
+]
