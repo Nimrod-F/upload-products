@@ -46,12 +46,12 @@ try {
 			);
 
 			$wc_attribute = $woocommerce->post( 'products/attributes', $attribute_data );
-		
+			status_message( 'Attribute added. Name: '. $wc_attribute -> name );
 		}
 		
 
 		if ( $wc_attribute ) :
-			status_message( 'Attribute added. ID: '. $wc_attribute -> id );
+
 
 			// store attribute ID so that we can use it later for creating products and variations
 			$added_attributes[$product_attribute_name]['id'] = $wc_attribute -> id;
@@ -64,10 +64,10 @@ try {
 						'name' => $term
 					);
 					$wc_attribute_term = $woocommerce->post( 'products/attributes/'. $wc_attribute -> id .'/terms', $attribute_term_data );
+					status_message( 'Attribute term added. Name: '. $wc_attribute -> name);
 				}
 				if ( $wc_attribute_term ) :
-					status_message( 'Attribute term added. ID: '. $wc_attribute -> id);
-
+					
 					// store attribute terms so that we can use it later for creating products
 					$added_attributes[$product_attribute_name]['terms'][] = $term;
 				endif;	
@@ -96,15 +96,13 @@ try {
 		$productExist = checkProductById($all_products, $product);
 			if (!$productExist['exist']) {
 				$wc_product = $woocommerce->post('products', $product);
+				status_message( 'Product added. ID: '. $wc_product -> id );
 		   } else {
 			   /*Update product information */
 			   $idProduct = $productExist['idProduct'];
 			   $wc_product = $woocommerce->put('products/' . $idProduct, $product);
+			   status_message( 'Product updated. ID: '. $wc_product -> id );
 		   }
-
-			if ( $wc_product ) :
-				status_message( 'Product added. ID: '. $wc_product -> id );
-			endif;
 		}
 		if ( isset( $_product_variations ) ) :
 			// Import: Product variations
@@ -203,7 +201,6 @@ function get_products_and_variations_from_json( $json, $added_attributes ) {
 				$imgCounter++;
 			}
 			$product[$key]['images'] = $imagesFormated;
-			echo print_r($categoriesIds);
 			$product[$key]['categories'] = $categoriesIds;
 			// Stock
 			$product[$key]['manage_stock'] = (bool) $pre_product['manage_stock'];
@@ -234,7 +231,7 @@ function get_products_and_variations_from_json( $json, $added_attributes ) {
 				$imagesFormated[] = [
 					'src' => $image,
 					'position' => $imgCounter
-				]; /* TODO: FIX POSITON */
+				];
 				$imgCounter++;
 			}
 			$product[$key]['images'] = $imagesFormated;
@@ -398,7 +395,9 @@ function createCategories()
 				'name' => $value["name"],
 				'parent' => $parentId
 			);
-            $woocommerce->post('products/categories', $data);
+            $wc_category = $woocommerce->post('products/categories', $data);
+			status_message( 'Category added. Name: '. $wc_category -> name );
+
         }
     }
 }
