@@ -26,8 +26,7 @@ $woocommerce = new Client(
 try {
 
 	$json = parse_json( FILE_TO_IMPORT );
-	$all_categories = $woocommerce->get('products/categories');
-	createCategories($all_categories);
+	createCategories();
 	// Import Attributes
 	
 	foreach ( get_attributes_from_json( $json ) as $product_attribute_name => $product_attribute ) :
@@ -80,7 +79,7 @@ try {
 	endforeach;
 
 
-	$data = get_products_and_variations_from_json( $all_categories, $json, $added_attributes );
+	$data = get_products_and_variations_from_json( $json, $added_attributes );
 
 	// Merge products and product variations so that we can loop through products, then its variations
 	$product_data = merge_products_and_variations( $data['products'], $data['product_variations'] );
@@ -174,11 +173,11 @@ function merge_products_and_variations( $product_data = array(), $product_variat
  * @param  array $added_attributes
  * @return array
 */
-function get_products_and_variations_from_json( $all_categories, $json, $added_attributes ) {
-
+function get_products_and_variations_from_json( $json, $added_attributes ) {
+	$woocommerce = getWoocommerceConfig();
 	$product = array();
 	$product_variations = array();
-
+	$all_categories = $woocommerce->get('products/categories');
 	foreach ( $json as $key => $pre_product ) :
 		$imagesFormated = array();
 		$imgCounter = 0;
@@ -204,6 +203,7 @@ function get_products_and_variations_from_json( $all_categories, $json, $added_a
 				$imgCounter++;
 			}
 			$product[$key]['images'] = $imagesFormated;
+			echo print_r($categoriesIds);
 			$product[$key]['categories'] = $categoriesIds;
 			// Stock
 			$product[$key]['manage_stock'] = (bool) $pre_product['manage_stock'];
@@ -383,19 +383,21 @@ function getCategoryIdByName($categories, $categoryName)
     }
 }
 
-function createCategories($categories)
+function createCategories()
 {
 	$woocommerce = getWoocommerceConfig();
     $categoryValues = getCategories();
     foreach ($categoryValues as $value) {
+		$categories = $woocommerce->get('products/categories');
         if (!checkCategoryByname($categories, $value["name"])) {
-		
+			$parentId = 0;
+			if($value["parent"] != 0){
+				$parentId = findCategoryParentId($categories, findCategoryParentName($categoryValues, $value["parent"]));
+			}
 			$data = array(
-				'id' =>  $value["id"],
 				'name' => $value["name"],
-				'parent' => $value["parent"]
+				'parent' => $parentId
 			);
-	
             $woocommerce->post('products/categories', $data);
         }
     }
@@ -443,4 +445,26 @@ function getWoocommerceConfig()
     );
 
     return $woocommerce;
+}
+
+function findCategoryParentId($categories, $parentCategoryName)
+{
+    foreach ($categories as $category) {
+        if ($category -> name == $parentCategoryName) {
+            return $category -> id;
+        }
+	}
+    
+	return null;
+}
+
+function findCategoryParentName($categories, $parentCategoryId)
+{
+    foreach ($categories as $category) {
+        if ($category['id'] == $parentCategoryId) {
+            return $category['name'];
+        }
+	}
+    
+	return null;
 }
