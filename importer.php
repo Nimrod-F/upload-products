@@ -190,7 +190,7 @@ function get_products_and_variations_from_json( $json, $added_attributes ) {
 			$categories = $pre_product['categories'];
 			/* Prepare categories */
 			foreach ($categories as $category) {
-				$categoriesIds[] = ['id' => getCategoryIdByName($all_categories, $category["name"])];
+				$categoriesIds[] = ['id' => getCategoryIdByName($all_categories, $category)];
 			}
 			$images = $pre_product['pics'];
 			foreach ($images as $image) {
@@ -223,7 +223,7 @@ function get_products_and_variations_from_json( $json, $added_attributes ) {
 			$categories = $pre_product['categories'];
 			/* Prepare categories */
 			foreach ($categories as $category) {
-				$categoriesIds[] = ['id' => getCategoryIdByName($all_categories, $category["name"])];
+				$categoriesIds[] = ['id' => getCategoryIdByName($all_categories, $category)];
 			}
 			$product[$key]['categories'] = $categoriesIds;
 			$images = $pre_product['pics'];
@@ -388,8 +388,8 @@ function createCategories()
 		$categories = $woocommerce->get('products/categories');
         if (!checkCategoryByname($categories, $value["name"])) {
 			$parentId = 0;
-			if($value["parent"] != 0){
-				$parentId = findCategoryParentId($categories, findCategoryParentName($categoryValues, $value["parent"]));
+			if($value["parent"] !== 0){
+				$parentId = findCategoryParentId($categories, $value["parent"]);
 			}
 			$data = array(
 				'name' => $value["name"],
@@ -418,11 +418,15 @@ function getCategories()
 {
     $products = parse_json( FILE_TO_IMPORT );
     $categories = array_column($products, 'categories');
-
     foreach ($categories as $categoryItems) {
-        foreach ($categoryItems as $categoryValue) {
-            $categoryPlainValues[] = $categoryValue;
-        }
+		for($i = 0; $i < count($categoryItems); ++$i) {
+			if($i == 0 ){
+				$categoryPlainValues[] = ['name' => $categoryItems[$i], 'parent' => $i];
+			}
+			else {
+				$categoryPlainValues[] = ['name' => $categoryItems[$i], 'parent' => $categoryItems[$i-1]];
+			}
+		}
     }
     $categoryList = array_unique($categoryPlainValues, SORT_REGULAR);
     return $categoryList;
@@ -454,16 +458,5 @@ function findCategoryParentId($categories, $parentCategoryName)
         }
 	}
     
-	return null;
-}
-
-function findCategoryParentName($categories, $parentCategoryId)
-{
-    foreach ($categories as $category) {
-        if ($category['id'] == $parentCategoryId) {
-            return $category['name'];
-        }
-	}
-    
-	return null;
+	return 0;
 }
