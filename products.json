@@ -1,53 +1,27 @@
-[
-  {
-    "product_id": 100,
-    "type": "simple",
-    "name": "My product 1",
-    "description": "My product description 1 alt",
-    "regular_price": 300,
-    "manage_stock": 0,
-    "stock": 3,
-    "weight": 0,
-    "has_variations": 0,
-    "pics": ["https://rovision.ro/wp-content/uploads/2021/05/25577_cablu-utp-cat-6-30-cupru-05-mm-rola-305-m-pentru-retelesupraveghereinternet.png", "https://rovision.ro/wp-content/uploads/2021/05/25578_cablu-utp-cat-6-30-cupru-05-mm-rola-305-m-pentru-retelesupraveghereinternet-1.jpg","https://rovision.ro/wp-content/uploads/2021/05/25899_cablu-electric-plat-alb-2x075mm-myyup-100mrola.jpg","https://rovision.ro/wp-content/uploads/2021/05/25900_cablu-retea-gembird-utp-cat-6-cca-rola-100m-gri-175279.jpeg"],
-    "categories": ["Accesorii Montaj CCTV", "Cablu utp si ftp"]
-  },
-  {
-    "product_id": 300,
-    "type": "variable",
-    "name": "My product 3",
-    "description": "My product description 3",
-    "regular_price": 0,
-    "manage_stock": 1,
-    "stock": 11,
-    "weight": 0,
-    "attribute_name": "Heigh",
-    "has_variations": 1,
-    "pics": ["https://rovision.ro/wp-content/uploads/2021/05/25536_cablu-rg59-coaxial-cu-alimentare-2x075-mm-rola-100-m-1.jpg"],
-    "categories": ["Camera supraveghere", "Camere supraveghere Rovision"]
-  },
-  {
-    "id": 1,
-    "type": "product_variation",
-    "parent_product_id": 300,
-    "description": "My product variation 1",
-    "regular_price": 5,
-    "manage_stock": 1,
-    "stock": 3,
-    "weight": 0,
-    "attribute_name": "Heigh",
-    "attribute_value": "X"
-  },
-  {
-    "id": 2,
-    "type": "product_variation",
-    "parent_product_id": 300,
-    "description": "My product variation description 2",
-    "regular_price": 15,
-    "manage_stock": 1,
-    "stock": 0,
-    "weight": 0,
-    "attribute_name": "Heigh",
-    "attribute_value": "M"
-  }
-]
+[{
+  "ID": "94943",
+  "sku": "PSO-120-27",
+  "denumire": "Sursa in comutatie POS Power - 27.6V, 4.2A cu back-up",
+  "descriere": "Sursa de alimentare in comutatie\u00a0POS Power reglabila intre 23.5V ~ 29.8V, si un curent maxim de pana la 4.2A (120W).\r\n<ul>\r\n \t<li>Model \/ producator\u00a0<b>POS Power<\/b><\/li>\r\n \t<li>Tensiune intrare\u00a0<b>90 - 264 V\/AC \u00b1 10% 50\/60 Hz<\/b><\/li>\r\n \t<li>Tensiune iesire\u00a0<b>24 VDC ( reglabila 23.5V ~ 29.8V )<\/b><\/li>\r\n \t<li>Curent maxim\u00a0<b>4.2 A<\/b><\/li>\r\n \t<li>Putere nominala la iesire\u00a0<b>120 W<\/b><\/li>\r\n \t<li>Protectie\u00a0<b>suprasarcina \/ scurtcircuit<\/b><\/li>\r\n \t<li>Temperatura de operare\u00a0<b>-10\u00b0 ~ +50\u00b0<\/b><\/li>\r\n \t<li>Carcasa\u00a0<b>metalica de protectie<\/b><\/li>\r\n \t<li>Dimensiuni\u00a0<b>159 x 98 x 38mm<\/b><\/li>\r\n \t<li>Greutate\u00a0<b>cca. 0.5 kg<\/b><\/li>\r\n<\/ul>\r\n<a href=https:\/\/rovision.ro\/wp-content\/uploads\/2019\/07\/PSO-120-spec-EN-R1.pdf>Fisa tehnica<\/a>",
+  "brand": "POS Power",
+  "stock": "instock",
+  "pret": "94.86",
+  "pret_lista": "132.80",
+  "categorii": ["Surse alimentare", "Sursa alimentare cu back-up"],
+  "link": "https:\/\/rovision.ro\/produs\/sursa-in-comutatie-pos-power-27-6v-4-2a-cu-back-up\/",
+  "imagine": "https:\/\/rovision.ro\/wp-content\/uploads\/2021\/05\/28972_img4377large-0.png"
+},
+{
+  "ID": "95334",
+  "sku": "201801013572",
+  "denumire": "Sursa Alimentare 5V 8A capsulata",
+  "descriere": "<strong>Sursa de alimentare 5V 8A<\/strong>\r\n\r\nEste foarte practica datorita cablului lung de alimentare de care dispune, aprox 100cm\r\n\r\nAplicabilitate foarte mare datorita mufei standard de care dispune, 5.5x2.5\r\n\r\nFolosita in general pentru alimentarea lanternelor, HDD-urilor de 2.5, aparatelor foto etc LED de stare pentru prezenta tensiune\r\n<ul>\r\n \t<li>Tensiune alimentare: 220V AC<\/li>\r\n \t<li>Tensiune de iesire: 5V DC<\/li>\r\n \t<li>Curent iesire: 8A<\/li>\r\n \t<li>Putere: 40W<\/li>\r\n \t<li>Culoare: negru<\/li>\r\n \t<li>Greutate: 164g<\/li>\r\n<\/ul>",
+  "brand": "Rovision",
+  "stock": "outofstock",
+  "pret": "28.56",
+  "pret_lista": "45.00",
+  "categorii": ["Surse alimentare", "Surse alimentare comutatie"],
+  "link": "https:\/\/rovision.ro\/produs\/sursa-alimentare-5v-8a-capsulata\/",
+  "imagine": "https:\/\/rovision.ro\/wp-content\/uploads\/2019\/08\/2-mare-scaled.jpg",
+  "imagini": ["https:\/\/rovision.ro\/wp-content\/uploads\/2019\/08\/1-mare-scaled.jpg", "https:\/\/rovision.ro\/wp-content\/uploads\/2019\/08\/3-mare-scaled.jpg"]
+}]
