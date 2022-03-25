@@ -17,52 +17,30 @@ $woocommerce = new Client(
 	'cs_7542dfa31838a748410acfc1bc39e6fba7705974',
     [
         'wp_api' => true,
-        'version' => 'wc/v2',
+        'version' => 'wc/v3',
 		'verify_ssl' => false,
-       // 'query_string_auth' => true
+		'timeout' => 900, // SET TIMOUT HERE
+		// 'query_string_auth' => true
     ]
 );
-
-try {
 
 	$json = parse_json( FILE_TO_IMPORT );
 	$all_categories = createCategories();
 
-	$data = get_products_from_json( $json, $all_categories );
 	$page = 1;
 	$products = [];
 	$all_products = [];
-		do{
-			try {
-				$products = $woocommerce->get('products',array('per_page' => 100, 'page' => $page));
-			}catch(HttpClientException $e){
-				die("Can't get products: $e");
-			}
-			$all_products = array_merge($all_products,$products);
-			$page++;
-		} while (count($products) > 0);
-	// Import: Products
-	foreach ( $data as $k => $product ) :
-		
-		$productExist = checkProductById($all_products, $product);
-			if (!$productExist['exist']) {
-				$wc_product = $woocommerce->post('products', $product);
-				status_message( 'Product added. SKU: '. $wc_product -> sku );
-				array_push($all_products, $wc_product);
-		   } else {
-			   /*Update product information */
-			   $idProduct = $productExist['idProduct'];
-			   $wc_product = $woocommerce->put('products/' . $idProduct, $product);
-			   status_message( 'Product updated. SKU: '. $wc_product -> sku );
-		   }
-
-	endforeach;
+	do{
+		try {
+			$products = $woocommerce->get('products',array('per_page' => 100, 'page' => $page));
+		}catch(HttpClientException $e){
+			die("Can't get products: $e");
+		}
+		$all_products = array_merge($all_products,$products);
+		$page++;
+	} while (count($products) > 0);
+	get_products_from_json( $all_products, $json, $all_categories );
 	
-
-} catch ( HttpClientException $e ) {
-    status_message( $e->getMessage() . " " . $product["sku"]); // Error message
-}
-
 /**
  * Get products from JSON and make them ready to import according WooCommerce API properties. 
  *
@@ -70,7 +48,7 @@ try {
  * @param  array $added_attributes
  * @return array
 */
-function get_products_from_json( $json, $all_categories) {
+function get_products_from_json( $all_products, $json, $all_categories) {
 	$woocommerce = getWoocommerceConfig();
 	$product = array();
 	foreach ( $json as $key => $pre_product ) :
@@ -92,19 +70,35 @@ function get_products_from_json( $json, $all_categories) {
 			}
 			$images = explode (",", $pre_product['Imagini']);
 			foreach ((array) $images as $image) {
-				$imagesFormated[] = [
-					'src' => $image,
-					'position' => $imgCounter
-				];
-				$imgCounter++;
+					 if(exif_imagetype($image)){
+						$imagesFormated[] = [
+							'src' => $image,
+							'position' => $imgCounter
+						];
+						$imgCounter++;
+					}
 			}
 			$product[$key]['stock_status'] = (string) $pre_product['Status'];
 			$product[$key]['images'] = $imagesFormated;
 			$product[$key]['categories'] = $categoriesIds;
-	
+		
+			try {
+			$productExist = checkProductById($all_products, $product[$key]);
+			if (!$productExist['exist']) {
+				$wc_product = $woocommerce->post('products', $product[$key]);
+				status_message( 'Product added. SKU: '. $wc_product -> sku );
+				array_push($all_products, $wc_product);
+		   } else {
+			   /*Update product information */
+			   $idProduct = $productExist['idProduct'];
+			   $wc_product = $woocommerce->put('products/' . $idProduct, $product[$key]);
+			   status_message( 'Product updated. SKU: '. $wc_product -> sku );
+		   }
+		} catch ( HttpClientException $e ) {
+			status_message( $e->getMessage() . " " . $product[$key]["sku"]); // Error message
+		}
+		
 	endforeach;		
-
-	return $product;
 }	
 
 /**
