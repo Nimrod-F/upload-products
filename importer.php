@@ -52,6 +52,7 @@ function get_products_from_json( $all_products, $json, $all_categories) {
 	$woocommerce = getWoocommerceConfig();
 	$product = array();
 	foreach ( $json as $key => $pre_product ) :
+		if(empty($pre_product['Nume'])) continue;
 		$imagesFormated = array();
 		$imgCounter = 0;
 		$categoriesIds = array();
@@ -212,6 +213,7 @@ function getCategories()
     $products = parse_json( FILE_TO_IMPORT );
     $categories = array_column($products, 'Categorie Principala');
 	foreach ( $products as $key => $pre_product ) :
+		if(empty($pre_product['Categorie Principala'])) continue;
 		$categorie_principala = (string) $pre_product['Categorie Principala'];
 		$categoryPlainValues[] = ['name' => $categorie_principala, 'parent' => 0, 'display' => 'default'];
 		$categorie_secundara = (string) $pre_product['Categorie Secundara'];
