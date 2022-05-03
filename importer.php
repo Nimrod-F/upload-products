@@ -1,6 +1,6 @@
 <?php
 ini_set('memory_limit', '1024M');
-define( 'FILE_TO_IMPORT', 'data.json' );
+define( 'FILE_TO_IMPORT', 'add_data.json' );
 define( 'DATA_LIMIT', 10000);
 require __DIR__ . '/vendor/autoload.php';
 
@@ -25,8 +25,8 @@ $woocommerce = new Client(
 );
 
 	$json = parse_json( FILE_TO_IMPORT );
+	$all_brands = createBrands();
 	$all_categories = createCategories();
-
 	$page = 1;
 	$products = [];
 	$all_products = [];
@@ -39,7 +39,7 @@ $woocommerce = new Client(
 		$all_products = array_merge($all_products,$products);
 		$page++;
 	} while (count($products) > 0);
-	get_products_from_json( $all_products, $json, $all_categories );
+	get_products_from_json( $all_products, $json, $all_categories, $all_brands );
 	
 /**
  * Get products from JSON and make them ready to import according WooCommerce API properties. 
@@ -48,7 +48,7 @@ $woocommerce = new Client(
  * @param  array $added_attributes
  * @return array
 */
-function get_products_from_json( $all_products, $json, $all_categories) {
+function get_products_from_json( $all_products, $json, $all_categories, $all_brands) {
 	$woocommerce = getWoocommerceConfig();
 	$product = array();
 	foreach ( $json as $key => $pre_product ) :
@@ -61,7 +61,6 @@ function get_products_from_json( $all_products, $json, $all_categories) {
 			$product[$key]['sku'] = (string) $pre_product['CodOnline'];
 			$product[$key]['name'] = (string) $pre_product['Nume'];
 			$product[$key]['description'] = (string) $pre_product['Descriere'];
-			$product[$key]['short_description'] = (string) $pre_product['Brand'];
 			$product[$key]['regular_price'] = (string) $pre_product['Pret SillyCode'];
 			$product[$key]['type'] = 'simple';
 			$categories = explode (",", $pre_product['Categorii']);
@@ -82,23 +81,25 @@ function get_products_from_json( $all_products, $json, $all_categories) {
 			$product[$key]['stock_status'] = (string) $pre_product['Status'];
 			$product[$key]['images'] = $imagesFormated;
 			$product[$key]['categories'] = $categoriesIds;
-		
+			$idBrand = array(getBrandByName($all_brands, (string) $pre_product['Brand']));
 			try {
 			$productExist = checkProductById($all_products, $product[$key]);
 			if (!$productExist['exist']) {
 				$wc_product = $woocommerce->post('products', $product[$key]);
+				$woocommerce->put( 'products/'.$wc_product->id, [ 'brands' => $idBrand ] );
 				status_message( 'Product added. SKU: '. $wc_product -> sku );
 				array_push($all_products, $wc_product);
 		   } else {
 			   /*Update product information */
 			   $idProduct = $productExist['idProduct'];
 			   $wc_product = $woocommerce->put('products/' . $idProduct, $product[$key]);
+				// $wc_product = $woocommerce->put( 'products/'.$idProduct, [ 'brands' => $idBrand ] );
 			   status_message( 'Product updated. SKU: '. $wc_product -> sku );
 		   }
+		  
 		} catch ( HttpClientException $e ) {
 			status_message( $e->getMessage() . " " . $product[$key]["sku"]); // Error message
 		}
-		
 	endforeach;		
 }	
 
@@ -150,6 +151,14 @@ function checkProductById($products, $p)
     return ['exist' => false, 'idProduct' => null];
 }
 
+function getBrandByName($brands, $name){
+	foreach ($brands as $brand) {
+        if ($brand -> name == $name) {
+            return $brand -> term_id;
+        }
+    }
+}
+
 function getCategoryIdByName($categories, $categoryName)
 {
     foreach ($categories as $category) {
@@ -157,6 +166,24 @@ function getCategoryIdByName($categories, $categoryName)
             return $category -> id;
         }
     }
+}
+
+function createBrands() {
+	$woocommerce = getWoocommerceConfig();
+	$brandsFromFile = getBrands();
+	$brands = $woocommerce->get('brands');
+	foreach($brandsFromFile as $brand){
+		if(!checkBrandByName($brands, $brand)){
+			$data = array(
+				'name' => $brand,
+				'slug' => '{$brand}-slug',
+			);
+            $wc_brand = $woocommerce->post('brands', $data);
+			status_message("Brand added with name: " . $wc_brand -> name);
+			array_push($brands, $wc_brand);
+		}
+	}
+	return $brands;
 }
 
 function createCategories()
@@ -195,6 +222,17 @@ function createCategories()
 	return $all_categories;
 }
 
+function checkBrandByName($brands, $brandName)
+{
+    foreach ($brands as $brand) {
+        if ($brand -> name == $brandName) {
+            return true;
+        }
+	}
+    
+	return false;
+}
+
 function checkCategoryByName($categories, $categoryName)
 {
 
@@ -205,6 +243,12 @@ function checkCategoryByName($categories, $categoryName)
 	}
     
 	return false;
+}
+
+function getBrands() {
+	$products = parse_json( FILE_TO_IMPORT );
+    $brands = array_column($products, 'Brand');
+	return $brands;
 }
 
 /** CATEGORIES  **/
