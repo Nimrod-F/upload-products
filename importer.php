@@ -191,6 +191,7 @@ function createCategories()
 	$woocommerce = getWoocommerceConfig();
     $categoryValues = getCategories();
 	$all_categories = [];
+	
 	$page = 1;
 	do{
 		try {
